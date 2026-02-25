@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GEARCALC-PRO — Losses & Efficiency (Backend Demo)</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="topbar">
+      <div>
+        <h1>GEARCALC-PRO</h1>
+        <p class="subtitle">Losses & Efficiency — Backend Demo (FastAPI → MATLAB → Python)</p>
+      </div>
+      <div class="badge-row">
+        <span class="badge">DEMO</span>
+        <span id="backendModeBadge" class="badge ghost">Mode: —</span>
+      </div>
+    </header>
+
+    <main class="grid">
+      <section class="card">
+        <h2>Inputs</h2>
+
+        <div class="field-grid">
+          <label><span>Module m [mm]</span><input id="module_mm" type="number" step="0.01" value="3.0" /></label>
+          <label><span>z1 (pinion teeth)</span><input id="z1" type="number" step="1" value="30" /></label>
+          <label><span>z2 (gear teeth)</span><input id="z2" type="number" step="1" value="60" /></label>
+          <label><span>Pressure angle α [deg]</span><input id="alpha_deg" type="number" step="0.1" value="20" /></label>
+          <label><span>Face width b [mm]</span><input id="face_width_mm" type="number" step="0.1" value="30" /></label>
+          <label><span>Speed [rpm]</span><input id="rpm" type="number" step="1" value="3000" /></label>
+          <label><span>Torque [Nm]</span><input id="torque_Nm" type="number" step="0.1" value="300" /></label>
+          <label><span>Ck (demo coeff)</span><input id="Ck" type="number" step="0.01" value="1.00" /></label>
+          <label><span>Cf (demo coeff)</span><input id="Cf" type="number" step="0.01" value="1.25" /></label>
+          <label><span>N (samples)</span><input id="N" type="number" step="1" value="1200" /></label>
+        </div>
+
+        <div class="field-grid">
+          <label class="full"><span>Backend URL</span><input id="backend_url" type="text" value="http://127.0.0.1:8000" /></label>
+        </div>
+
+        <div class="actions">
+          <button id="btnHealth" class="btn secondary">Check Backend Health</button>
+          <button id="btnRun" class="btn primary">Run Backend Demo</button>
+        </div>
+
+        <div id="status" class="status neutral">Ready.</div>
+      </section>
+
+      <section class="card">
+        <h2>Results</h2>
+
+        <div class="kpi-grid">
+          <div class="kpi"><div class="kpi-label">Input Power</div><div id="kpiPin" class="kpi-value">—</div></div>
+          <div class="kpi"><div class="kpi-label">Predicted Loss</div><div id="kpiPloss" class="kpi-value">—</div></div>
+          <div class="kpi"><div class="kpi-label">Efficiency</div><div id="kpiEta" class="kpi-value">—</div></div>
+          <div class="kpi"><div class="kpi-label">Mean μ</div><div id="kpiMu" class="kpi-value">—</div></div>
+        </div>
+
+        <div class="meta">
+          <div><strong>Status:</strong> <span id="resStatus">—</span></div>
+          <div><strong>Message:</strong> <span id="resMsg">—</span></div>
+          <div><strong>Job ID:</strong> <span id="resJob">—</span></div>
+        </div>
+
+        <h3>Frictional Power Demo Curve</h3>
+        <canvas id="plotCanvas" width="880" height="340"></canvas>
+      </section>
+    </main>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
