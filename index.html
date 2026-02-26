@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>GEARCALC-PRO UI — Contact Ratio (MATLAB API)</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#121b33;
+      --panel2:#0f1730;
+      --text:#eaf0ff;
+      --muted:#aeb8d6;
+      --line:rgba(255,255,255,.12);
+      --ok:#3ddc97;
+      --bad:#ff6b6b;
+      --blue:#7aa2ff;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background: radial-gradient(1200px 800px at 10% -10%, rgba(122,162,255,.25), transparent 60%),
+                  radial-gradient(900px 650px at 90% 0%, rgba(61,220,151,.12), transparent 60%),
+                  linear-gradient(180deg, #070b14, var(--bg));
+      min-height:100vh;
+      padding:18px;
+    }
+    .wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:14px;
+    }
+    h1{margin:0 0 6px 0;font-size:18px;font-weight:900}
+    .sub{color:var(--muted);font-size:13px;line-height:1.4}
+    .grid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:10px;
+    }
+    @media (max-width: 800px){
+      .grid{grid-template-columns:1fr}
+    }
+    label{font-size:12px;color:var(--muted)}
+    input{
+      width:100%;
+      background: rgba(0,0,0,.22);
+      color: var(--text);
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:12px;
+      padding:10px 10px;
+      outline:none;
+      font-size:13px;
+    }
+    input:focus{
+      border-color: rgba(122,162,255,.55);
+      box-shadow: 0 0 0 3px rgba(122,162,255,.18);
+    }
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px}
+    .btn{
+      border:1px solid rgba(255,255,255,.16);
+      background: rgba(255,255,255,.06);
+      color: var(--text);
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:900;
+      cursor:pointer;
+    }
+    .btn.primary{
+      background: rgba(122,162,255,.18);
+      border-color: rgba(122,162,255,.45);
+    }
+    .status{
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.18);
+      color: var(--muted);
+      font-size:13px;
+      line-height:1.4;
+      margin-top:12px;
+    }
+    .status.ok{border-color: rgba(61,220,151,.35); color: rgba(234,240,255,.92);}
+    .status.bad{border-color: rgba(255,107,107,.45); color: rgba(234,240,255,.92);}
+    .mono{font-family:var(--mono)}
+    .kvs{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+    @media (max-width: 800px){
+      .kvs{grid-template-columns:1fr}
+    }
+    .kv{
+      background: rgba(0,0,0,.16);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      padding:12px;
+    }
+    .kv .k{color:var(--muted);font-size:12px;margin-bottom:6px}
+    .kv .v{font-family:var(--mono);font-size:14px;font-weight:800}
+    .foot{color:rgba(255,255,255,.55);font-size:12px;margin-top:4px}
+    .apiBox{
+      margin-top:10px;
+      display:flex; gap:8px; flex-wrap:wrap; align-items:center;
+      color:var(--muted); font-size:12px;
+    }
+    .apiBox input{max-width:420px}
+    a{color:var(--blue);text-decoration:none}
+    a:hover{text-decoration:underline}
+  </style>
+</head>
+
+<body>
+<div class="wrap">
+
+  <div class="card">
+    <h1>GEARCALC-PRO UI — Contact Ratio (MATLAB API)</h1>
+    <div class="sub">
+      This page calls your local FastAPI server (MATLAB backend) and displays only scalar results.
+      Make sure the API is running at <span class="mono">http://127.0.0.1:8000</span>.
+    </div>
+
+    <div class="apiBox">
+      <span>API base URL:</span>
+      <input id="apiBase" type="text" value="http://127.0.0.1:8000" />
+      <span>Test:</span>
+      <a href="http://127.0.0.1:8000/docs" target="_blank" rel="noreferrer">Open API docs</a>
+    </div>
+
+    <div class="grid">
+      <div>
+        <label>Module m [mm]</label>
+        <input id="m" type="number" step="0.01" value="3">
+      </div>
+      <div>
+        <label>Pressure angle α [deg]</label>
+        <input id="alpha" type="number" step="0.01" value="20">
+      </div>
+      <div>
+        <label>Pinion teeth z₁</label>
+        <input id="z1" type="number" step="1" value="30">
+      </div>
+      <div>
+        <label>Gear teeth z₂</label>
+        <input id="z2" type="number" step="1" value="31">
+      </div>
+      <div>
+        <label>Addendum coefficient Ck</label>
+        <input id="Ck" type="number" step="0.01" value="1.00">
+      </div>
+      <div>
+        <label>Dedendum coefficient Cf</label>
+        <input id="Cf" type="number" step="0.01" value="1.25">
+      </div>
+      <div>
+        <label>Sampling points N</label>
+        <input id="N" type="number" step="50" value="1200">
+      </div>
+      <div>
+        <label>Return curves (for later)</label>
+        <input id="returnCurves" type="number" step="1" value="0" title="0 = false, 1 = true">
+      </div>
+    </div>
+
+    <div class="row">
+      <button class="btn primary" id="btnCompute">Compute (API)</button>
+      <button class="btn" id="btnClear">Clear</button>
+    </div>
+
+    <div class="status" id="status">Ready. Click <b>Compute (API)</b>.</div>
+  </div>
+
+  <div class="card">
+    <h1 style="font-size:15px;margin:0 0 6px 0;">Scalar Results</h1>
+    <div class="sub">Main scalars returned by the MATLAB contact-ratio solver.</div>
+
+    <div class="kvs">
+      <div class="kv"><div class="k">εα (LOA-based)</div><div class="v" id="epsLOA">—</div></div>
+      <div class="kv"><div class="k">εα (arc-based)</div><div class="v" id="epsArcs">—</div></div>
+
+      <div class="kv"><div class="k">LOA length L_LOA [mm]</div><div class="v" id="LLOA">—</div></div>
+      <div class="kv"><div class="k">Base pitch p_b [mm]</div><div class="v" id="pb">—</div></div>
+
+      <div class="kv"><div class="k">Circular pitch t0 = πm [mm]</div><div class="v" id="t0">—</div></div>
+      <div class="kv"><div class="k">Projected pitch tg [mm]</div><div class="v" id="tg">—</div></div>
+
+      <div class="kv"><div class="k">Arc_GEAR1 (B→P) [mm]</div><div class="v" id="arc1">—</div></div>
+      <div class="kv"><div class="k">Arc_GEAR2 (P→C) [mm]</div><div class="v" id="arc2">—</div></div>
+
+      <div class="kv"><div class="k">Effective contact length ea [mm]</div><div class="v" id="ea">—</div></div>
+      <div class="kv"><div class="k">Pitch-point index (0-based)</div><div class="v" id="idxP0">—</div></div>
+    </div>
+
+    <div class="foot">
+      Tip: if you want this UI to also plot LOA curves later, we can turn <span class="mono">return_curves</span> on and add a simple canvas plot.
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const el = (id) => document.getElementById(id);
+
+  function fmt(v, nd=8){
+    if (v === null || v === undefined) return "—";
+    if (!Number.isFinite(v)) return "—";
+    const s = Number(v).toFixed(nd);
+    return s.replace(/(\.\d*?[1-9])0+$/,'$1').replace(/\.0+$/,'');
+  }
+
+  function setStatus(kind, msg){
+    const s = el("status");
+    s.className = "status " + (kind || "");
+    s.innerHTML = msg;
+  }
+
+  function clearResults(){
+    ["epsLOA","epsArcs","LLOA","pb","t0","tg","arc1","arc2","ea","idxP0"].forEach(id => el(id).textContent = "—");
+  }
+
+  async function compute(){
+    clearResults();
+    setStatus("", "Calling API...");
+
+    const apiBase = el("apiBase").value.trim().replace(/\/+$/,"");
+    const url = apiBase + "/api/v1/contact-ratio";
+
+    const payload = {
+      m: parseFloat(el("m").value),
+      alpha_deg: parseFloat(el("alpha").value),
+      z1: parseInt(el("z1").value, 10),
+      z2: parseInt(el("z2").value, 10),
+      Ck: parseFloat(el("Ck").value),
+      Cf: parseFloat(el("Cf").value),
+      N: parseInt(el("N").value, 10),
+      return_curves: (parseInt(el("returnCurves").value, 10) === 1)
+    };
+
+    try{
+      const res = await fetch(url, {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify(payload)
+      });
+
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok){
+        const detail = data.detail || "API error";
+        throw new Error(detail);
+      }
+
+      const c = data.contact || {};
+      el("epsLOA").textContent  = fmt(c.eps_LOA, 10);
+      el("epsArcs").textContent = fmt(c.eps_arcs, 10);
+      el("LLOA").textContent    = fmt(c.L_LOA, 10);
+      el("pb").textContent      = fmt(c.p_b, 10);
+      el("t0").textContent      = fmt(c.t0, 10);
+      el("tg").textContent      = fmt(c.tg, 10);
+      el("arc1").textContent    = fmt(c.arc_GEAR1, 10);
+      el("arc2").textContent    = fmt(c.arc_GEAR2, 10);
+      el("ea").textContent      = fmt(c.ea, 10);
+      el("idxP0").textContent   = (c.idxP0 !== undefined) ? String(c.idxP0) : "—";
+
+      setStatus("ok",
+        `OK. εα(LOA) = <span class="mono">${fmt(c.eps_LOA, 8)}</span>, ` +
+        `εα(arcs) = <span class="mono">${fmt(c.eps_arcs, 8)}</span>.`
+      );
+
+    } catch(err){
+      console.error(err);
+      setStatus("bad",
+        `Error: <span class="mono">${String(err.message || err)}</span><br>` +
+        `Make sure the API server is running and reachable at <span class="mono">${el("apiBase").value}</span>.`
+      );
+    }
+  }
+
+  el("btnCompute").addEventListener("click", compute);
+  el("btnClear").addEventListener("click", () => { clearResults(); setStatus("", "Cleared. Ready."); });
+
+  clearResults();
+</script>
+</body>
+</html>
